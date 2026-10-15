@@ -26,3 +26,5 @@ Contributors List
 Sr. No.| Name| Faculty or Student| Department| Institute| Email ID
 1| Nitin gupta| Student| Information Technology| Rajkiya Engineering College, Banda| niting9119@gmail.com
 2| —| —| —| —| —
+
+hello rec banda 
