@@ -1,15 +1,972 @@
-<!DOCTYPE html>
-<html>
-<head>
-	 
-	<!-- Add CSS at the head of HTML file -->
-	 <h1>Bifurication and chaos in logistic mapS</h1>
-    <link rel="stylesheet" href="./css/main.css">
-</head>
-<body>
-		<!-- Your code goes here-->
 
-	<!-- Add JS at the bottom of HTML file --> 
-        <script src="./js/main.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bifurcation and Chaos in the Logistic Map | Virtual Lab</title>
+
+<style>
+:root {
+  --bg: #07111f;
+  --panel: #101e31;
+  --border: #263c56;
+  --text: #edf5ff;
+  --muted: #9eb0c8;
+  --cyan: #42d9ff;
+  --orange: #ffbd69;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  padding: 25px;
+  background: #0c192b;
+  border-bottom: 1px solid var(--border);
+}
+
+.eyebrow {
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+h1 {
+  margin: 10px 0;
+  font-size: clamp(25px, 4vw, 38px);
+}
+
+header p {
+  color: var(--muted);
+}
+
+main {
+  width: min(1450px, 100%);
+  margin: auto;
+  padding: 20px;
+}
+
+.equation {
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.panel-heading {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel h2 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.panel-content {
+  padding: 16px;
+}
+
+.control {
+  margin-bottom: 22px;
+}
+
+.control-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+output {
+  color: var(--cyan);
+  font-weight: bold;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+small,
+.muted {
+  color: var(--muted);
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+button {
+  padding: 11px 8px;
+  color: var(--text);
+  background: #19304b;
+  border: 1px solid #365472;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  border-color: var(--cyan);
+}
+
+button.primary {
+  background: #087eaa;
+  border-color: #087eaa;
+}
+
+.status {
+  color: #83f0ba;
+  font-size: 13px;
+  margin-top: 15px;
+  min-height: 38px;
+  overflow-wrap: anywhere;
+}
+
+.viewer {
+  height: 450px;
+  position: relative;
+  background: #050d18;
+}
+
+#scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+  background: #07111fe8;
+  padding: 9px;
+  border-radius: 8px;
+  color: #cbd9ea;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.metric {
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.metric-value {
+  margin-top: 6px;
+  font-size: 21px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.chart-content {
+  padding: 12px;
+}
+
+#chart {
+  display: block;
+  width: 100%;
+  height: 260px;
+  min-width: 0;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 2px;
+}
+
+.info {
+  padding: 17px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.info h3 {
+  margin-top: 0;
+}
+
+.info p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 850px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .viewer {
+    height: 380px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 12px;
+  }
+
+  header {
+    padding: 18px;
+  }
+
+  .viewer {
+    height: 320px;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+
+<body>
+
+<header>
+  <div class="eyebrow">VIRTUAL LABS · NONLINEAR DYNAMICS</div>
+
+  <h1>Bifurcation and Chaos in the Logistic Map</h1>
+
+  <p>
+    Explore stable states, period doubling and chaotic behaviour
+    using an interactive 3D visualization.
+  </p>
+</header>
+
+<main>
+
+  <div class="equation">
+    x<sub>n+1</sub> = r × x<sub>n</sub> × (1 − x<sub>n</sub>)
+  </div>
+
+  <div class="layout">
+
+    <aside class="panel">
+
+      <div class="panel-heading">
+        <h2>Simulation Controls</h2>
+      </div>
+
+      <div class="panel-content">
+
+        <div class="control">
+          <div class="control-title">
+            <label for="rSlider">Growth parameter (r)</label>
+            <output id="rValue">3.70</output>
+          </div>
+
+          <input id="rSlider"
+                 type="range"
+                 min="0"
+                 max="4"
+                 step="0.01"
+                 value="3.70">
+
+          <small>Range: 0 to 4</small>
+        </div>
+
+        <div class="control">
+          <div class="control-title">
+            <label for="xSlider">Initial condition (x₀)</label>
+            <output id="xValue">0.50</output>
+          </div>
+
+          <input id="xSlider"
+                 type="range"
+                 min="0.01"
+                 max="0.99"
+                 step="0.01"
+                 value="0.50">
+        </div>
+
+        <div class="control">
+          <div class="control-title">
+            <label for="nSlider">Iterations</label>
+            <output id="nValue">120</output>
+          </div>
+
+          <input id="nSlider"
+                 type="range"
+                 min="20"
+                 max="300"
+                 step="10"
+                 value="120">
+        </div>
+
+        <div class="buttons">
+          <button id="runButton" class="primary" type="button">
+            ▶ Run
+          </button>
+
+          <button id="resetButton" type="button">
+            ↺ Reset
+          </button>
+
+          <button id="viewButton" type="button">
+            Reset 3D View
+          </button>
+
+          <button id="rotateButton" type="button">
+            Pause Rotation
+          </button>
+        </div>
+
+        <div id="status" class="status" role="status">
+          Initializing simulation...
+        </div>
+
+        <hr style="border-color:var(--border);margin:18px 0">
+
+        <small>
+          <b>How to use</b><br><br>
+          1. Adjust parameter r.<br>
+          2. Change initial value x₀.<br>
+          3. Press Run to update the trajectory.<br>
+          4. Drag the 3D scene to rotate it.<br>
+          5. Scroll to zoom.
+        </small>
+
+      </div>
+    </aside>
+
+    <section>
+
+      <div class="panel">
+
+        <div class="panel-heading">
+          <h2>Interactive 3D Bifurcation Diagram</h2>
+        </div>
+
+        <div class="viewer">
+          <canvas id="scene"
+                  aria-label="Interactive 3D logistic map visualization">
+          </canvas>
+
+          <div class="overlay">
+            X-axis: Parameter r<br>
+            Y-axis: State xₙ<br>
+            Z-axis: Iteration index
+          </div>
+        </div>
+
+      </div>
+
+      <div class="metrics">
+
+        <div class="metric">
+          <div class="metric-label">Parameter r</div>
+          <div class="metric-value" id="metricR">3.70</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">Last state xₙ</div>
+          <div class="metric-value" id="metricX">—</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">State range</div>
+          <div class="metric-value" id="metricRange">—</div>
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <div class="panel-heading">
+          <h2>Selected Trajectory: xₙ vs Iteration</h2>
+        </div>
+
+        <div class="chart-content">
+          <canvas id="chart"
+                  aria-label="Graph of state x n against iteration">
+          </canvas>
+
+          <small class="muted">
+            Horizontal axis: iteration n ·
+            Vertical axis: state xₙ
+          </small>
+        </div>
+
+      </div>
+
+    </section>
+  </div>
+
+  <section class="info-grid">
+
+    <article class="info">
+      <h3>Objective</h3>
+      <p>
+        Investigate how the logistic map changes as the growth
+        parameter r increases.
+      </p>
+    </article>
+
+    <article class="info">
+      <h3>Observation</h3>
+      <p>
+        The system can approach a stable value, periodic cycles,
+        or chaotic behaviour depending on r.
+      </p>
+    </article>
+
+    <article class="info">
+      <h3>Scientific Note</h3>
+      <p>
+        The bifurcation cloud displays long-term states after an
+        initial transient is discarded.
+      </p>
+    </article>
+
+  </section>
+</main>
+
+<footer>
+  Virtual Lab · Logistic Map · xₙ₊₁ = r xₙ (1 − xₙ)
+</footer>
+
+<script type="module">
+const statusBox = document.getElementById("status");
+
+function setStatus(message) {
+  statusBox.textContent = message;
+}
+
+try {
+  const THREE = await import("three");
+
+  const { OrbitControls } =
+    await import("three/addons/controls/OrbitControls.js");
+
+  const $ = id => document.getElementById(id);
+
+  const sceneCanvas = $("scene");
+  const chartCanvas = $("chart");
+  const chartContext = chartCanvas.getContext("2d");
+
+  let scene;
+  let camera;
+  let renderer;
+  let controls;
+  let cloud;
+  let trajectoryLine;
+  let trajectoryGeometry;
+  let marker;
+
+  let rotationPaused = false;
+  let trajectory = [];
+
+  function getParameters() {
+    return {
+      r: Number($("rSlider").value),
+      x0: Number($("xSlider").value),
+      iterations: Number($("nSlider").value)
+    };
+  }
+
+  function logisticMap(r, x) {
+    return r * x * (1 - x);
+  }
+
+  function calculateTrajectory(r, x0, iterations) {
+    const values = [x0];
+    let x = x0;
+
+    for (let i = 0; i < iterations; i++) {
+      x = logisticMap(r, x);
+
+      if (!Number.isFinite(x)) {
+        x = 0;
+      }
+
+      x = Math.max(0, Math.min(1, x));
+      values.push(x);
+    }
+
+    return values;
+  }
+
+  function createBifurcationCloud() {
+    const positions = [];
+    const colors = [];
+
+    const rSteps = 220;
+    const transient = 180;
+    const retained = 90;
+
+    const colorA = new THREE.Color("#35d9ff");
+    const colorB = new THREE.Color("#a38cff");
+
+    for (let ri = 0; ri < rSteps; ri++) {
+      const r = 2.5 + (4 - 2.5) * ri / (rSteps - 1);
+      let x = 0.314159;
+
+      for (let n = 0; n < transient + retained; n++) {
+        x = logisticMap(r, x);
+
+        if (n >= transient) {
+          const px = ((r - 3.25) / 1.5) * 5.3;
+          const py = (x - 0.5) * 5;
+          const pz =
+            ((n - transient) / (retained - 1)) * 5 - 2.5;
+
+          positions.push(px, py, pz);
+
+          const color = colorA.clone().lerp(
+            colorB,
+            (r - 2.5) / 1.5
+          );
+
+          colors.push(color.r, color.g, color.b);
+        }
+      }
+    }
+
+    const geometry = new THREE.BufferGeometry();
+
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3)
+    );
+
+    geometry.setAttribute(
+      "color",
+      new THREE.Float32BufferAttribute(colors, 3)
+    );
+
+    const material = new THREE.PointsMaterial({
+      size: 0.035,
+      vertexColors: true,
+      sizeAttenuation: true
+    });
+
+    cloud = new THREE.Points(geometry, material);
+    scene.add(cloud);
+  }
+
+  function createScene() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color("#06101d");
+    scene.fog = new THREE.Fog("#06101d", 28, 65);
+
+    camera = new THREE.PerspectiveCamera(48, 1, 0.1, 150);
+    camera.position.set(12, 10, 16);
+
+    renderer = new THREE.WebGLRenderer({
+      canvas: sceneCanvas,
+      antialias: true
+    });
+
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, 2)
+    );
+
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    controls = new OrbitControls(
+      camera,
+      renderer.domElement
+    );
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.target.set(0, 0, 0);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(7, 12, 10);
+    scene.add(light);
+
+    const grid = new THREE.GridHelper(
+      12, 12, 0x31516d, 0x20374e
+    );
+
+    grid.position.y = -2.6;
+    scene.add(grid);
+
+    const axes = new THREE.AxesHelper(5);
+    axes.position.set(-5.5, -2.6, -2.5);
+    scene.add(axes);
+
+    createBifurcationCloud();
+
+    trajectoryGeometry = new THREE.BufferGeometry();
+
+    trajectoryLine = new THREE.Line(
+      trajectoryGeometry,
+      new THREE.LineBasicMaterial({
+        color: 0xffbd69
+      })
+    );
+
+    scene.add(trajectoryLine);
+
+    marker = new THREE.Mesh(
+      new THREE.SphereGeometry(0.11, 16, 16),
+      new THREE.MeshStandardMaterial({
+        color: 0xffbd69,
+        emissive: 0x57300a
+      })
+    );
+
+    scene.add(marker);
+    resizeScene();
+  }
+
+  function updateTrajectory() {
+    const { r, x0, iterations } = getParameters();
+
+    trajectory = calculateTrajectory(
+      r,
+      x0,
+      iterations
+    );
+
+    const positions = [];
+
+    trajectory.forEach((x, n) => {
+      positions.push(
+        ((r - 3.25) / 1.5) * 5.3,
+        (x - 0.5) * 5,
+        (n / iterations) * 5 - 2.5
+      );
+    });
+
+    trajectoryGeometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3)
+    );
+
+    trajectoryGeometry.computeBoundingSphere();
+
+    const last = trajectory[trajectory.length - 1];
+
+    marker.position.set(
+      ((r - 3.25) / 1.5) * 5.3,
+      (last - 0.5) * 5,
+      2.5
+    );
+
+    $("rValue").textContent = r.toFixed(2);
+    $("xValue").textContent = x0.toFixed(2);
+    $("nValue").textContent = String(iterations);
+
+    $("metricR").textContent = r.toFixed(2);
+    $("metricX").textContent = last.toFixed(5);
+
+    $("metricRange").textContent =
+      Math.min(...trajectory).toFixed(2) +
+      "–" +
+      Math.max(...trajectory).toFixed(2);
+
+    drawChart();
+  }
+
+  // Smooth, responsive, high-resolution trajectory graph.
+  function drawChart() {
+    if (!chartCanvas || !chartContext || trajectory.length < 2) {
+      return;
+    }
+
+    const rect = chartCanvas.getBoundingClientRect();
+
+    if (rect.width < 2) {
+      return;
+    }
+
+    const width = rect.width;
+    const height = 260;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    chartCanvas.width = Math.round(width * dpr);
+    chartCanvas.height = Math.round(height * dpr);
+
+    chartContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const ctx = chartContext;
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#091728";
+    ctx.fillRect(0, 0, width, height);
+
+    const left = 48;
+    const right = 16;
+    const top = 18;
+    const bottom = 32;
+
+    const plotWidth = Math.max(1, width - left - right);
+    const plotHeight = height - top - bottom;
+
+    ctx.font = "12px Arial";
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#243b54";
+    ctx.fillStyle = "#9db0ca";
+
+    // Horizontal grid and Y-axis labels.
+    for (let i = 0; i <= 5; i++) {
+      const y = top + plotHeight * i / 5;
+
+      ctx.beginPath();
+      ctx.moveTo(left, y);
+      ctx.lineTo(width - right, y);
+      ctx.stroke();
+
+      ctx.textAlign = "right";
+      ctx.fillText(
+        (1 - i / 5).toFixed(1),
+        left - 9,
+        y + 4
+      );
+    }
+
+    // Vertical grid and X-axis labels.
+    for (let i = 0; i <= 4; i++) {
+      const x = left + plotWidth * i / 4;
+
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, top + plotHeight);
+      ctx.stroke();
+
+      ctx.textAlign = "center";
+
+      const iteration = Math.round(
+        (trajectory.length - 1) * i / 4
+      );
+
+      ctx.fillText(
+        String(iteration),
+        x,
+        height - 10
+      );
+    }
+
+    // Clip the trajectory to the graph area.
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.rect(left, top, plotWidth, plotHeight);
+    ctx.clip();
+
+    ctx.beginPath();
+
+    trajectory.forEach((value, index) => {
+      const x =
+        left +
+        index / (trajectory.length - 1) * plotWidth;
+
+      const y =
+        top + (1 - value) * plotHeight;
+
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+
+    ctx.strokeStyle = "#42d9ff";
+    ctx.lineWidth = 2.2;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.shadowColor = "#42d9ff";
+    ctx.shadowBlur = 3;
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Highlight the final trajectory value.
+    const last = trajectory[trajectory.length - 1];
+
+    ctx.beginPath();
+
+    ctx.arc(
+      left + plotWidth,
+      top + (1 - last) * plotHeight,
+      4,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fillStyle = "#ffbd69";
+    ctx.shadowColor = "#ffbd69";
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  function resizeScene() {
+    if (!renderer || !camera) {
+      return;
+    }
+
+    const width = Math.max(1, sceneCanvas.clientWidth);
+    const height = Math.max(1, sceneCanvas.clientHeight);
+
+    renderer.setSize(width, height, false);
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    drawChart();
+  }
+
+  function resetView() {
+    camera.position.set(12, 10, 16);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    if (!rotationPaused && cloud) {
+      cloud.rotation.y += 0.0005;
+    }
+
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  function updateSimulation() {
+    updateTrajectory();
+
+    const { r } = getParameters();
+
+    setStatus(
+      "Simulation updated. Current r = " + r.toFixed(2)
+    );
+  }
+
+  $("rSlider").addEventListener("input", updateSimulation);
+  $("xSlider").addEventListener("input", updateSimulation);
+  $("nSlider").addEventListener("input", updateSimulation);
+
+  $("runButton").addEventListener("click", () => {
+    updateSimulation();
+
+    setStatus(
+      "Simulation complete. Drag the 3D model to rotate and zoom."
+    );
+  });
+
+  $("resetButton").addEventListener("click", () => {
+    $("rSlider").value = "3.70";
+    $("xSlider").value = "0.50";
+    $("nSlider").value = "120";
+
+    updateSimulation();
+    resetView();
+
+    setStatus("Parameters and camera view reset.");
+  });
+
+  $("viewButton").addEventListener("click", () => {
+    resetView();
+    setStatus("3D camera view reset.");
+  });
+
+  $("rotateButton").addEventListener("click", () => {
+    rotationPaused = !rotationPaused;
+
+    $("rotateButton").textContent =
+      rotationPaused ? "▶ Resume Rotation" : "Pause Rotation";
+
+    setStatus(
+      rotationPaused ? "Rotation paused." : "Rotation resumed."
+    );
+  });
+
+  window.addEventListener("resize", resizeScene);
+
+  createScene();
+  updateTrajectory();
+  animate();
+
+  setStatus(
+    "Ready. Adjust the sliders to explore the logistic map."
+  );
+
+} catch (error) {
+  console.error(error);
+
+  setStatus(
+    "3D library failed to load. Check internet, use Live Server, " +
+    "and inspect the browser Console (F12)."
+  );
+}
+</script>
 </body>
 </html>
